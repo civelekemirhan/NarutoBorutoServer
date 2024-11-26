@@ -3,10 +3,10 @@ package com.example.repository
 import com.example.models.ApiResponse
 import com.example.models.Hero
 
-const val NEXT_PAGE_KEY="nextPage"
-const val PREV_PAGE_KEY="prevPage"
+const val NEXT_PAGE_KEY = "nextPage"
+const val PREV_PAGE_KEY = "prevPage"
 
-class HeroRepositoryImpl:HeroRepository {
+class HeroRepositoryImpl : HeroRepository {
 
     override val heroes: Map<Int, List<Hero>> by lazy {
         mapOf(
@@ -404,31 +404,53 @@ class HeroRepositoryImpl:HeroRepository {
             message = "ok",
             prevPage = calculatePage(page)[PREV_PAGE_KEY],
             nextPage = calculatePage(page)[NEXT_PAGE_KEY],
-            heroes=heroes[page]!!
+            heroes = heroes[page]!!
         )
     }
 
-    private fun calculatePage(page:Int):Map<String,Int?>{
-        var prevPage:Int? = page
-        var nextPage:Int?= page
-        if(page in 1..4){
-            nextPage=nextPage?.plus(1)
+    private fun calculatePage(page: Int): Map<String, Int?> {
+        var prevPage: Int? = page
+        var nextPage: Int? = page
+        if (page in 1..4) {
+            nextPage = nextPage?.plus(1)
         }
-        if (page in 2..5){
-            prevPage=prevPage?.minus(1)
+        if (page in 2..5) {
+            prevPage = prevPage?.minus(1)
         }
-        if(page==1){
-            prevPage=null
+        if (page == 1) {
+            prevPage = null
         }
-        if (page==5){
-            nextPage=null
+        if (page == 5) {
+            nextPage = null
         }
 
-        return mapOf(PREV_PAGE_KEY to prevPage , NEXT_PAGE_KEY to nextPage)
+        return mapOf(PREV_PAGE_KEY to prevPage, NEXT_PAGE_KEY to nextPage)
 
     }
 
-    override suspend fun searchHeroes(name: String): ApiResponse {
-        TODO("Not yet implemented")
+    override suspend fun searchHeroes(name: String?): ApiResponse {
+        return ApiResponse(
+            success = true,
+            message = "OK",
+            heroes = findHeroes(name)
+        )
+
+    }
+
+    private fun findHeroes(query: String?): List<Hero> {
+        val founded = mutableListOf<Hero>()
+        return if (!query.isNullOrEmpty()) {
+            heroes.forEach { (_, heroes) ->
+                heroes.forEach { hero ->
+                    if (hero.name.lowercase().contains(query.lowercase())) {
+                        founded.add(hero)
+                    }
+                }
+            }
+            founded
+        } else {
+            emptyList()
+        }
+
     }
 }
