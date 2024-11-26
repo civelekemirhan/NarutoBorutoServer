@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+    implementation("io.ktor:ktor-server-status-pages:3.0.1")
     implementation("io.ktor:ktor-server-default-headers:3.0.1")
     implementation("io.insert-koin:koin-ktor:3.4.0")
     implementation("io.insert-koin:koin-logger-slf4j:3.4.0")
